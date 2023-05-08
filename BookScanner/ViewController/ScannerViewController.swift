@@ -39,7 +39,15 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
     }
     
     func readBarcode(_ data: String) {
-        print(data)
+        Task {
+            do {
+                let book = try await APICaller().getBookByISBN(data)
+            }
+            catch let e {
+                print("An error occured.")
+                print(e)
+            }
+        }
     }
     
     func askForCameraPermissions() async -> Bool {
