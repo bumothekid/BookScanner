@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		634914762A0920BD005FC067 /* APICaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634914752A0920BD005FC067 /* APICaller.swift */; };
+		634914782A093163005FC067 /* Books.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634914772A093163005FC067 /* Books.swift */; };
+		6349147A2A093192005FC067 /* Book.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634914792A093192005FC067 /* Book.swift */; };
+		6349147D2A094157005FC067 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 6349147C2A094157005FC067 /* .gitignore */; };
 		6382B0692A083891004AA6D2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6382B0682A083891004AA6D2 /* AppDelegate.swift */; };
 		6382B06B2A083891004AA6D2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6382B06A2A083891004AA6D2 /* SceneDelegate.swift */; };
 		6382B06D2A083891004AA6D2 /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6382B06C2A083891004AA6D2 /* HomeController.swift */; };
@@ -37,6 +41,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		634914752A0920BD005FC067 /* APICaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICaller.swift; sourceTree = "<group>"; };
+		634914772A093163005FC067 /* Books.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Books.swift; sourceTree = "<group>"; };
+		634914792A093192005FC067 /* Book.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Book.swift; sourceTree = "<group>"; };
+		6349147B2A093FDD005FC067 /* Secrets.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Secrets.xcconfig; sourceTree = "<group>"; };
+		6349147C2A094157005FC067 /* .gitignore */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 		6382B0652A083891004AA6D2 /* BookScanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BookScanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6382B0682A083891004AA6D2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6382B06A2A083891004AA6D2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -81,6 +90,8 @@
 		6382B05C2A083891004AA6D2 = {
 			isa = PBXGroup;
 			children = (
+				6349147C2A094157005FC067 /* .gitignore */,
+				6349147B2A093FDD005FC067 /* Secrets.xcconfig */,
 				6382B0672A083891004AA6D2 /* BookScanner */,
 				6382B07E2A083894004AA6D2 /* BookScannerTests */,
 				6382B0882A083895004AA6D2 /* BookScannerUITests */,
@@ -142,6 +153,9 @@
 				6382B0732A083894004AA6D2 /* LaunchScreen.storyboard */,
 				6382B0682A083891004AA6D2 /* AppDelegate.swift */,
 				6382B06A2A083891004AA6D2 /* SceneDelegate.swift */,
+				634914752A0920BD005FC067 /* APICaller.swift */,
+				634914772A093163005FC067 /* Books.swift */,
+				634914792A093192005FC067 /* Book.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -251,6 +265,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6382B0752A083894004AA6D2 /* LaunchScreen.storyboard in Resources */,
+				6349147D2A094157005FC067 /* .gitignore in Resources */,
 				6382B0722A083894004AA6D2 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -276,8 +291,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6349147A2A093192005FC067 /* Book.swift in Sources */,
 				6382B09B2A0844E8004AA6D2 /* ScannerViewController.swift in Sources */,
+				634914762A0920BD005FC067 /* APICaller.swift in Sources */,
 				6382B06D2A083891004AA6D2 /* HomeController.swift in Sources */,
+				634914782A093163005FC067 /* Books.swift in Sources */,
 				6382B0692A083891004AA6D2 /* AppDelegate.swift in Sources */,
 				6382B09D2A084520004AA6D2 /* TabBarController.swift in Sources */,
 				6382B06B2A083891004AA6D2 /* SceneDelegate.swift in Sources */,
@@ -330,6 +348,7 @@
 /* Begin XCBuildConfiguration section */
 		6382B08D2A083895004AA6D2 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6349147B2A093FDD005FC067 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -390,6 +409,7 @@
 		};
 		6382B08E2A083895004AA6D2 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6349147B2A093FDD005FC067 /* Secrets.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
