@@ -42,6 +42,30 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         Task {
             do {
                 let book = try await APICaller().getBookByISBN(data)
+                
+                guard try await BookHandler().getBookByISBN(data) == nil else {
+                    let alertController = UIAlertController(title: book.title, message: "\(book.industryIdentifiers[1].identifier) is already in your book shelf.", preferredStyle: .alert)
+                    alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
+                        if self.captureSession.isRunning == false {
+                            self.captureSession.startRunning()
+                        }
+                    }))
+                    
+                    present(alertController, animated: true)
+                    return
+                }
+                
+                let alertController = UIAlertController(title: book.title, message: "Do you want to add \(book.industryIdentifiers[1].identifier) to your book shelf?", preferredStyle: .alert)
+                alertController.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
+                    self.saveBook(book)
+                }))
+                alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
+                    if self.captureSession.isRunning == false {
+                        self.captureSession.startRunning()
+                    }
+                }))
+                
+                present(alertController, animated: true)
             }
             catch let e {
                 print("An error occured.")
@@ -72,6 +96,12 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         
         present(alertController, animated: true)
         captureSession = nil
+    }
+    
+    func saveBook(_ book: Book) {
+        Task {
+            try await BookHandler().saveBook(book)
+        }
     }
     
     func configureViewComponents() {
