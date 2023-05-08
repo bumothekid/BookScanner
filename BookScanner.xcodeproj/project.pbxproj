@@ -87,6 +87,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6349147E2A0946E6005FC067 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				634914772A093163005FC067 /* Books.swift */,
+				634914792A093192005FC067 /* Book.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		6349147F2A09471D005FC067 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				634914752A0920BD005FC067 /* APICaller.swift */,
+			);
+			path = Managers;
+			sourceTree = "<group>";
+		};
 		6382B05C2A083891004AA6D2 = {
 			isa = PBXGroup;
 			children = (
@@ -113,6 +130,8 @@
 			isa = PBXGroup;
 			children = (
 				6382B0992A08421E004AA6D2 /* Resources */,
+				6349147F2A09471D005FC067 /* Managers */,
+				6349147E2A0946E6005FC067 /* Models */,
 				6382B0982A0841ED004AA6D2 /* ViewController */,
 				6382B0762A083894004AA6D2 /* Info.plist */,
 			);
@@ -153,9 +172,6 @@
 				6382B0732A083894004AA6D2 /* LaunchScreen.storyboard */,
 				6382B0682A083891004AA6D2 /* AppDelegate.swift */,
 				6382B06A2A083891004AA6D2 /* SceneDelegate.swift */,
-				634914752A0920BD005FC067 /* APICaller.swift */,
-				634914772A093163005FC067 /* Books.swift */,
-				634914792A093192005FC067 /* Book.swift */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
