@@ -33,7 +33,6 @@ class APICaller {
     }
     
     private func createGETRequest(_ apiURL: URL) async -> URLRequest {
-        print(apiURL)
         var request = URLRequest(url: apiURL)
         request.httpMethod = "GET"
         request.timeoutInterval = 30
