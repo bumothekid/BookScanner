@@ -38,6 +38,71 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         }
     }
     
+    override func viewDidLayoutSubviews() {
+        Task {
+            await prepareCaptureSessionAndPreviewLayer()
+            
+            captureSession.startRunning()
+        }
+    }
+    
+    lazy var previewView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .blue
+        return view
+    }()
+    
+    lazy var scanView: UIView = {
+        let view = UIView(frame: CGRect(x: view.frame.width/2 - 100, y: view.frame.height/2 - 150, width: 200, height: 100))
+        view.backgroundColor = .blue
+        view.layer.cornerRadius = 10
+        view.clipsToBounds = true
+        return view
+    }()
+    
+    lazy var darkenView: UIView = {
+        let view = UIView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height))
+        view.backgroundColor = .black.withAlphaComponent(0.5)
+        view.clipsToBounds = true
+        return view
+    }()
+    
+    lazy var cutoutLayer: CAShapeLayer = {
+        let shapeLayer = CAShapeLayer()
+        shapeLayer.frame = darkenView.frame
+        shapeLayer.fillRule = .evenOdd
+            
+        let path = UIBezierPath(rect: darkenView.frame)
+        path.append(UIBezierPath(roundedRect: scanView.frame, cornerRadius: 10))
+        shapeLayer.path = path.cgPath
+        
+        return shapeLayer
+    }()
+    
+    lazy var infoTextBackground: UIView = {
+        let view = UIView()
+        view.backgroundColor = .secondarySystemBackground
+        view.layer.cornerRadius = 10
+        return view
+    }()
+    
+    lazy var infoLabel: UILabel = {
+        let lb = UILabel()
+        lb.textColor = .label
+        lb.font = .systemFont(ofSize: 14, weight: .bold)
+        lb.text = "Please scan a book barcode."
+        return lb
+    }()
+    
+    lazy var infoImageView: UIImageView = {
+        let iv = UIImageView()
+        iv.tintColor = .label
+        iv.clipsToBounds = true
+        iv.contentMode = .scaleAspectFit
+        iv.image = UIImage(systemName: "info.bubble.fill")
+        return iv
+    }()
+    
     func readBarcode(_ data: String) {
         Task {
             do {
@@ -108,51 +173,66 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
         view.backgroundColor = .systemBackground
         title = "Scanner"
         
-        navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.largeTitleDisplayMode = .always
+        navigationItem.largeTitleDisplayMode = .never
+        navigationController?.navigationBar.backgroundColor = .secondarySystemBackground
         
+        view.addSubview(previewView)
+        previewView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.safeAreaLayoutGuide.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.safeAreaLayoutGuide.rightAnchor)
+        
+        previewView.addSubview(darkenView)
+        darkenView.layer.mask = cutoutLayer
+        
+        previewView.addSubview(infoTextBackground)
+        infoTextBackground.anchor(left: previewView.leftAnchor, bottom: previewView.bottomAnchor, right: previewView.rightAnchor, paddingLeft: 20, paddingBottom: -20, paddingRight: -20, height: 50)
+//        infoTextBackground.rightAnchor.constraint(lessThanOrEqualTo: previewView.rightAnchor, constant: -20).isActive = true
+        
+        infoTextBackground.addSubview(infoImageView)
+        infoImageView.anchor(left: infoTextBackground.leftAnchor, paddingLeft: 15, width: 25, height: 25)
+        infoImageView.centerYAnchor.constraint(equalTo: infoTextBackground.centerYAnchor).isActive = true
+        
+        infoTextBackground.addSubview(infoLabel)
+        infoLabel.anchor(left: infoImageView.rightAnchor, right: previewView.rightAnchor, paddingLeft: 5, paddingRight: -15)
+        infoLabel.centerYAnchor.constraint(equalTo: infoTextBackground.centerYAnchor).isActive = true
+    }
+    
+    
+    func prepareCaptureSessionAndPreviewLayer() async {
         captureSession = AVCaptureSession()
         guard let videoCaptureDevice = AVCaptureDevice.default(for: .video) else { return }
-        let videoInput: AVCaptureDeviceInput
+        guard let videoInput = try? AVCaptureDeviceInput(device: videoCaptureDevice) else { return }
         
-        do {
-            videoInput = try AVCaptureDeviceInput(device: videoCaptureDevice)
-        }
-        catch {
-            return
-        }
-        
-        if captureSession.canAddInput(videoInput) {
-            captureSession.addInput(videoInput)
-        }
-        else {
+        guard captureSession.canAddInput(videoInput) else {
             notSupported()
             return
         }
+        
+        captureSession.addInput(videoInput)
         
         let metaDataOutput = AVCaptureMetadataOutput()
         
-        if captureSession.canAddOutput(metaDataOutput) {
-            captureSession.addOutput(metaDataOutput)
-            
-            metaDataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
-            metaDataOutput.metadataObjectTypes = [.ean8, .ean13, .pdf417]
-        }
-        else {
+        guard captureSession.canAddOutput(metaDataOutput) else {
             notSupported()
             return
         }
         
+        captureSession.addOutput(metaDataOutput)
+            
         previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer.frame = view.layer.bounds
+        previewLayer.frame = previewView.bounds
         previewLayer.videoGravity = .resizeAspectFill
-        view.layer.addSublayer(previewLayer)
+        previewView.layer.insertSublayer(previewLayer, at: 0)
+        let scanArea = previewLayer.metadataOutputRectConverted(fromLayerRect: scanView.frame)
         
-        captureSession.startRunning()
+        metaDataOutput.rectOfInterest = scanArea
+        metaDataOutput.setMetadataObjectsDelegate(self, queue: DispatchQueue.main)
+        metaDataOutput.metadataObjectTypes = [.ean8, .ean13, .pdf417]
+        
     }
     
     func metadataOutput(_ output: AVCaptureMetadataOutput, didOutput metadataObjects: [AVMetadataObject], from connection: AVCaptureConnection) {
         captureSession.stopRunning()
+        
+        guard metadataObjects.count < 2 else { return }
         
         if let metaDataObject = metadataObjects.first {
             guard let readableObject = metaDataObject as? AVMetadataMachineReadableCodeObject else { return }
