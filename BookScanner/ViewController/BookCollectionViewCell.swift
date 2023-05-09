@@ -47,7 +47,7 @@ class BookCollectionViewCell: UICollectionViewCell {
         super.init(frame: frame)
         
         contentView.backgroundColor = .secondaryBackgroundColor
-        contentView.layer.cornerRadius = 20
+        contentView.layer.cornerRadius = 15
         
         contentView.addSubview(imageView)
         imageView.anchor(left: contentView.leftAnchor, width: contentView.frame.height / 1.5, height: contentView.frame.height / 1.5)
