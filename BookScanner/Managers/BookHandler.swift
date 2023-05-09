@@ -25,6 +25,24 @@ class BookHandler {
         UserDefaults.standard.set(newBooksArray, forKey: "bookOrder")
     }
     
+    public func removeBookByISBN(_ isbn: String) async throws {
+        let oldBooksDict: [String: Any] = UserDefaults.standard.dictionary(forKey: "books") ?? [String: Any]()
+        let oldBooksArray: [String] = UserDefaults.standard.array(forKey: "bookOrder") as? [String] ?? [String]()
+        
+        guard oldBooksDict[isbn] != nil else { return }
+        
+        var newBooksDict = oldBooksDict
+        var newBooksArray = oldBooksArray
+        
+        newBooksDict.removeValue(forKey: isbn)
+        newBooksArray.remove(at: newBooksArray.firstIndex(of: isbn)!)
+        
+        UserDefaults.standard.removeObject(forKey: "books")
+        UserDefaults.standard.removeObject(forKey: "bookOrder")
+        UserDefaults.standard.set(newBooksDict, forKey: "books")
+        UserDefaults.standard.set(newBooksArray, forKey: "bookOrder")
+    }
+    
     public func getBookByISBN(_ isbn: String) async throws -> Book? {
         let booksDict: [String: Any] = UserDefaults.standard.dictionary(forKey: "books") ?? [String: Any]()
         guard let bookData = booksDict[isbn] else { return nil }
