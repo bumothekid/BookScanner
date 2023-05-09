@@ -69,7 +69,7 @@ extension HomeController: UICollectionViewDataSource, UICollectionViewDelegate, 
         let book = booksDict[bookIsbn]!
         
         cell.titleLabel.text = book.title
-        cell.authorLabel.text = book.authors.first
+        cell.authorLabel.text = book.authors?.first ?? "No authors found"
         cell.imageView.image = UIImage(named: "placeholderCover")
         if let coverURL = book.imageLinks?.thumbnail {
             cell.imageView.sd_setImage(with: URL(string: coverURL))

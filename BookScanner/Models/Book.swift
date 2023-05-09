@@ -12,13 +12,13 @@ struct BookVolume: Codable {
 }
 
 struct Book: Codable {
-    let authors: [String]
+    let authors: [String]?
     let categories: [String]?
     let imageLinks: Images?
     let industryIdentifiers: [Identifier]
     let language: String
     let maturityRating: String
-    let pageCount: Int
+    let pageCount: Int?
     let publishedDate: String
     let title: String
 }
