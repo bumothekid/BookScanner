@@ -16,6 +16,7 @@
 		634914852A098A34005FC067 /* BookCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 634914832A098A34005FC067 /* BookCollectionViewCell.xib */; };
 		634914872A098E77005FC067 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634914862A098E77005FC067 /* Extensions.swift */; };
 		6349148E2A09AED5005FC067 /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = 6349148D2A09AED5005FC067 /* SDWebImage */; };
+		635D4E822A0AC81D006E0E6F /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 635D4E812A0AC81D006E0E6F /* ProfileController.swift */; };
 		6382B0692A083891004AA6D2 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6382B0682A083891004AA6D2 /* AppDelegate.swift */; };
 		6382B06B2A083891004AA6D2 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6382B06A2A083891004AA6D2 /* SceneDelegate.swift */; };
 		6382B06D2A083891004AA6D2 /* HomeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6382B06C2A083891004AA6D2 /* HomeController.swift */; };
@@ -55,6 +56,7 @@
 		634914822A098A34005FC067 /* BookCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookCollectionViewCell.swift; sourceTree = "<group>"; };
 		634914832A098A34005FC067 /* BookCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BookCollectionViewCell.xib; sourceTree = "<group>"; };
 		634914862A098E77005FC067 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
+		635D4E812A0AC81D006E0E6F /* ProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		6382B0652A083891004AA6D2 /* BookScanner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BookScanner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6382B0682A083891004AA6D2 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6382B06A2A083891004AA6D2 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -174,6 +176,7 @@
 				6382B09A2A0844E8004AA6D2 /* ScannerViewController.swift */,
 				634914822A098A34005FC067 /* BookCollectionViewCell.swift */,
 				634914832A098A34005FC067 /* BookCollectionViewCell.xib */,
+				635D4E812A0AC81D006E0E6F /* ProfileController.swift */,
 			);
 			path = ViewController;
 			sourceTree = "<group>";
@@ -339,6 +342,7 @@
 				6382B06B2A083891004AA6D2 /* SceneDelegate.swift in Sources */,
 				634914872A098E77005FC067 /* Extensions.swift in Sources */,
 				634914812A09477B005FC067 /* BookHandler.swift in Sources */,
+				635D4E822A0AC81D006E0E6F /* ProfileController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
