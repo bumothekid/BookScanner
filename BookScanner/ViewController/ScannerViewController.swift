@@ -106,12 +106,24 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
     func readBarcode(_ data: String) {
         Task {
             do {
+                guard data.hasPrefix("978") else {
+                    let alertController = UIAlertController(title: nil, message: "Please scan only books.", preferredStyle: .alert)
+                    alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
+                        if !self.captureSession.isRunning {
+                            self.captureSession.startRunning()
+                        }
+                    }))
+                    
+                    present(alertController, animated: true)
+                    return
+                }
+                
                 let book = try await APICaller().getBookByISBN(data)
                 
                 guard try await BookHandler().getBookByISBN(data) == nil else {
                     let alertController = UIAlertController(title: book.title, message: "\(book.industryIdentifiers[1].identifier) is already in your book shelf.", preferredStyle: .alert)
                     alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
-                        if self.captureSession.isRunning == false {
+                        if !self.captureSession.isRunning {
                             self.captureSession.startRunning()
                         }
                     }))
@@ -125,7 +137,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
                     self.saveBook(book)
                 }))
                 alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: { _ in
-                    if self.captureSession.isRunning == false {
+                    if !self.captureSession.isRunning {
                         self.captureSession.startRunning()
                     }
                 }))
