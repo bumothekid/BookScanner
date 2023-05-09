@@ -26,7 +26,6 @@ class APICaller {
         guard let apiURL = URL(string: Constants.baseApiURL + isbn + "&key=" + Constants.apiKey) else { throw APIError.failedToBuildURL }
         let request = await createGETRequest(apiURL)
         let (data, _) = try await URLSession.shared.data(for: request)
-        print(try JSONSerialization.jsonObject(with: data))
         let jsonData = try JSONDecoder().decode(Books.self, from: data)
         guard let book = jsonData.items.first?.volumeInfo else { throw APIError.noItemsInRequest }
         
