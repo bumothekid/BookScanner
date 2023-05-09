@@ -48,7 +48,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
     
     lazy var previewView: UIView = {
         let view = UIView()
-        view.backgroundColor = .blue
+        view.backgroundColor = .clear
         return view
     }()
     
@@ -81,7 +81,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
     
     lazy var infoTextBackground: UIView = {
         let view = UIView()
-        view.backgroundColor = .secondarySystemBackground
+        view.backgroundColor = .secondaryBackgroundColor
         view.layer.cornerRadius = 10
         return view
     }()
@@ -170,11 +170,11 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
     }
     
     func configureViewComponents() {
-        view.backgroundColor = .systemBackground
+        view.backgroundColor = .backgroundColor
         title = "Scanner"
         
         navigationItem.largeTitleDisplayMode = .never
-        navigationController?.navigationBar.backgroundColor = .secondarySystemBackground
+        navigationController?.navigationBar.backgroundColor = .backgroundColor
         
         view.addSubview(previewView)
         previewView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.safeAreaLayoutGuide.leftAnchor, bottom: view.safeAreaLayoutGuide.bottomAnchor, right: view.safeAreaLayoutGuide.rightAnchor)
