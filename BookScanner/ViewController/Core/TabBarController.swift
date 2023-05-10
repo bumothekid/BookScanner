@@ -6,13 +6,20 @@
 //
 
 import UIKit
+import FirebaseAuth
 
 class TabBarController: UITabBarController {
 
     override func viewDidLoad() {
+        guard Auth.auth().currentUser != nil else {
+            let signUpController = UIViewController
+            navigationController?.pushViewController(<#T##viewController: UIViewController##UIViewController#>, animated: <#T##Bool#>)
+            return
+        }
+        
         super.viewDidLoad()
 
-        let HomeController = HomeController()
+        let HomeController = SecHomeController()
         let ScannerViewController = ScannerViewController()
         let ProfileController = ProfileController()
         
