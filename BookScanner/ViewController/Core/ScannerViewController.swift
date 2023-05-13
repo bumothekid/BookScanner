@@ -12,6 +12,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
     
     var captureSession: AVCaptureSession!
     var previewLayer: AVCaptureVideoPreviewLayer!
+    let userProfile: User!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,6 +45,16 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
             
             captureSession.startRunning()
         }
+    }
+    
+    required init(profile: User) {
+        userProfile = profile
+        
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     lazy var previewView: UIView = {
@@ -118,10 +129,10 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
                     return
                 }
                 
-                let book = try await APICaller().getBookByISBN(data)
+                let book = try await APICaller.shared.getBookByISBN(data)
                 
                 guard try await BookHandler().getBookByISBN(data) == nil else {
-                    let alertController = UIAlertController(title: book.title, message: "\(book.industryIdentifiers[1].identifier) is already in your book shelf.", preferredStyle: .alert)
+                    let alertController = UIAlertController(title: book.title, message: "\(book.isbn) is already in your book shelf.", preferredStyle: .alert)
                     alertController.addAction(UIAlertAction(title: "Ok", style: .default, handler: { _ in
                         if !self.captureSession.isRunning {
                             self.captureSession.startRunning()
@@ -132,7 +143,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
                     return
                 }
                 
-                let alertController = UIAlertController(title: book.title, message: "Do you want to add \(book.industryIdentifiers[1].identifier) to your book shelf?", preferredStyle: .alert)
+                let alertController = UIAlertController(title: book.title, message: "Do you want to add \(book.isbn) to your book shelf?", preferredStyle: .alert)
                 alertController.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
                     self.saveBook(book)
                 }))
@@ -177,7 +188,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
     
     func saveBook(_ book: Book) {
         Task {
-            try await BookHandler().saveBook(book)
+            try await BookHandler().saveBook(book: book, user: userProfile)
         }
     }
     

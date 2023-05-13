@@ -26,10 +26,12 @@ class APICaller {
         guard let apiURL = URL(string: Constants.baseApiURL + isbn + "&key=" + Constants.apiKey) else { throw APIError.failedToBuildURL }
         let request = await createGETRequest(apiURL)
         let (data, _) = try await URLSession.shared.data(for: request)
-        let jsonData = try JSONDecoder().decode(Books.self, from: data)
-        guard let book = jsonData.items.first?.volumeInfo else { throw APIError.noItemsInRequest }
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .customStringToDate
+        let jsonData = try decoder.decode(APIBooks.self, from: data)
+        guard let apiBook = jsonData.items.first?.volumeInfo else { throw APIError.noItemsInRequest }
         
-        return book
+        return Book(title: apiBook.title, isbn: apiBook.industryIdentifiers[1].identifier.hasPrefix("978") ? apiBook.industryIdentifiers[1].identifier : "978" + apiBook.industryIdentifiers[1].identifier, publisher: apiBook.publisher, pageCount: apiBook.pageCount, authors: apiBook.authors, categories: apiBook.categories, coverURL: apiBook.imageLinks?.thumbnail, language: apiBook.language, publishedDate: apiBook.publishedDate)
     }
     
     private func createGETRequest(_ apiURL: URL) async -> URLRequest {

@@ -8,22 +8,51 @@
 import Foundation
 
 class BookHandler {
+    
+    public func refreshUserDefaults(_ user: User) async throws {
+        UserDefaults.standard.removeObject(forKey: "books")
+        UserDefaults.standard.removeObject(forKey: "bookOrder")
+        
+        guard !user.booksPath.isEmpty else { return }
+        
+        var books = [String]()
+        user.booksPath.forEach { isbn in
+            let isbn = isbn.suffix(13)
+            books.append(String(isbn))
+        }
+        
+        var newBooksDict = [String: Any]()
+        
+        for book in try await DatabaseHandler.shared.getBooksFromDatabaseByISBN(books) ?? [Book]() {
+            newBooksDict[book.isbn] = try JSONEncoder().encode(book)
+        }
+        
+        let newBooksArray = books
+        
+        UserDefaults.standard.set(newBooksDict, forKey: "books")
+        UserDefaults.standard.set(newBooksArray, forKey: "bookOrder")
+    }
 
-    public func saveBook(_ book: Book) async throws {
+    public func saveBook(book: Book, user: User) async throws {
         let oldBooksDict: [String: Any] = UserDefaults.standard.dictionary(forKey: "books") ?? [String: Any]()
         let oldBooksArray: [String] = UserDefaults.standard.array(forKey: "bookOrder") as? [String] ?? [String]()
         let bookData = try JSONEncoder().encode(book)
         var newBooksDict = oldBooksDict
         var newBooksArray = oldBooksArray
         
-        newBooksDict[book.industryIdentifiers[1].identifier] = bookData
-        newBooksArray.append(book.industryIdentifiers[1].identifier)
+        newBooksDict[book.isbn] = bookData
+        newBooksArray.append(book.isbn)
         
         UserDefaults.standard.removeObject(forKey: "books")
         UserDefaults.standard.removeObject(forKey: "bookOrder")
         UserDefaults.standard.set(newBooksDict, forKey: "books")
         UserDefaults.standard.set(newBooksArray, forKey: "bookOrder")
+        
+        try await DatabaseHandler.shared.addBookToDatabase(book)
+        try await DatabaseHandler.shared.addBookToUser(book: book, user: user)
     }
+    
+    // Update for database
     
     public func removeBookByISBN(_ isbn: String) async throws {
         let oldBooksDict: [String: Any] = UserDefaults.standard.dictionary(forKey: "books") ?? [String: Any]()
