@@ -29,6 +29,12 @@ class HomeController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        if !isBeingPresented && !isMovingToParent {
+            Task {
+                try await (navigationController?.tabBarController as? TabBarController)?.reloadViewController()
+            }
+        }
+        
         Task {
             booksDict = try await BookHandler().getAllBooks()
             bookOrder = try await BookHandler().getBookOrder()
@@ -118,18 +124,10 @@ class HomeController: UIViewController {
         return view
     }()
     
-    @objc func logOut() {
-        do {
-            try Auth.auth().signOut()
-            
-            let signInController = SignInController()
-            signInController.hidesBottomBarWhenPushed = true
-            signInController.navigationItem.hidesBackButton = true
-            navigationController?.pushViewController(signInController, animated: false)
-        }
-        catch {
-            
-        }
+    @objc func pushSettingsController() {
+        let settingsController = SettingsController(profile: userProfile)
+        
+        navigationController?.pushViewController(settingsController, animated: true)
     }
     
     @objc func pushProfileController() {
@@ -223,7 +221,7 @@ class HomeController: UIViewController {
         navigationController?.navigationBar.backgroundColor = .backgroundColor
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "person", withConfiguration: UIImage.SymbolConfiguration(weight: .semibold)), style: .plain, target: self, action: #selector(pushProfileController))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "trash.square.fill"), style: .plain, target: self, action: #selector(logOut))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "gearshape.fill"), style: .plain, target: self, action: #selector(pushSettingsController))
         
         navigationItem.rightBarButtonItem?.tintColor = .label
         navigationItem.leftBarButtonItem?.tintColor = .label

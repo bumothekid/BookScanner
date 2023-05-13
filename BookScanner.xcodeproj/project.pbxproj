@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		630AF5E92A1042ED007F5AA7 /* SettingsController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 630AF5E82A1042ED007F5AA7 /* SettingsController.swift */; };
 		6335E6302A0FE08B00B8FD3D /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6335E62F2A0FE08B00B8FD3D /* GoogleService-Info.plist */; };
 		634914762A0920BD005FC067 /* APICaller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634914752A0920BD005FC067 /* APICaller.swift */; };
 		634914782A093163005FC067 /* APIBooks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 634914772A093163005FC067 /* APIBooks.swift */; };
@@ -56,6 +57,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		630AF5E82A1042ED007F5AA7 /* SettingsController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsController.swift; sourceTree = "<group>"; };
 		6335E62F2A0FE08B00B8FD3D /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		634914752A0920BD005FC067 /* APICaller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APICaller.swift; sourceTree = "<group>"; };
 		634914772A093163005FC067 /* APIBooks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIBooks.swift; sourceTree = "<group>"; };
@@ -229,6 +231,7 @@
 				634914822A098A34005FC067 /* UserSearchCollectionViewCell.swift */,
 				63F0BFD62A0BF0F2000B7E6A /* SignUpController.swift */,
 				63F0BFD82A0BF118000B7E6A /* SignInController.swift */,
+				630AF5E82A1042ED007F5AA7 /* SettingsController.swift */,
 			);
 			path = Other;
 			sourceTree = "<group>";
@@ -390,6 +393,7 @@
 				63FCA7F32A0D98E9005F8E8D /* SearchViewController.swift in Sources */,
 				634914872A098E77005FC067 /* Extensions.swift in Sources */,
 				63F0BFD92A0BF118000B7E6A /* SignInController.swift in Sources */,
+				630AF5E92A1042ED007F5AA7 /* SettingsController.swift in Sources */,
 				634914812A09477B005FC067 /* BookHandler.swift in Sources */,
 				635D4E822A0AC81D006E0E6F /* ProfileController.swift in Sources */,
 				63B5E2CE2A0D0572005E6295 /* Book.swift in Sources */,
