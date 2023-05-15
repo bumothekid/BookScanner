@@ -51,6 +51,11 @@ class SettingsController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
+    func changedSetting() {
+        let homeController = (parent as? UINavigationController)?.viewControllers[0] as? HomeController
+        homeController?.reloadWhenPopping = true
+    }
+    
     func configureViewComponents() {
         view.backgroundColor = .backgroundColor
         title = "Settings"

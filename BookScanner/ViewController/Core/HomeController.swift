@@ -18,6 +18,7 @@ class HomeController: UIViewController {
     }
     var booksArray: [Book] = [Book]()
     var bookOrder: [String] = [String]()
+    var reloadWhenPopping: Bool = false
     let userProfile: User
 
     override func viewDidLoad() {
@@ -29,7 +30,7 @@ class HomeController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if !isBeingPresented && !isMovingToParent {
+        if !isBeingPresented && !isMovingToParent && reloadWhenPopping {
             Task {
                 try await (navigationController?.tabBarController as? TabBarController)?.reloadViewController()
             }
@@ -123,6 +124,10 @@ class HomeController: UIViewController {
         view.showsHorizontalScrollIndicator = false
         return view
     }()
+    
+    @objc func notificationsView() {
+        print("notifications")
+    }
     
     @objc func pushSettingsController() {
         let settingsController = SettingsController(profile: userProfile)
@@ -220,10 +225,16 @@ class HomeController: UIViewController {
         navigationItem.largeTitleDisplayMode = .never
         navigationController?.navigationBar.backgroundColor = .backgroundColor
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "person", withConfiguration: UIImage.SymbolConfiguration(weight: .semibold)), style: .plain, target: self, action: #selector(pushProfileController))
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "gearshape.fill"), style: .plain, target: self, action: #selector(pushSettingsController))
+//        bell.badge.fill if notification
         
-        navigationItem.rightBarButtonItem?.tintColor = .label
+        let rightBarButtons = [UIBarButtonItem(image: UIImage(systemName: "person", withConfiguration: UIImage.SymbolConfiguration(weight: .semibold)), style: .plain, target: self, action: #selector(pushProfileController)), UIBarButtonItem(image: UIImage(systemName: "bell", withConfiguration: UIImage.SymbolConfiguration(weight: .semibold)), style: .plain, target: self, action: #selector(notificationsView))]
+        navigationItem.rightBarButtonItems = rightBarButtons
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "gearshape", withConfiguration: UIImage.SymbolConfiguration(weight: .semibold)), style: .plain, target: self, action: #selector(pushSettingsController))
+        
+        for item in navigationItem.rightBarButtonItems ?? [UIBarButtonItem]() {
+            item.tintColor = .label
+        }
+        
         navigationItem.leftBarButtonItem?.tintColor = .label
         
         view.addSubview(currentBookView)
