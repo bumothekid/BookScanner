@@ -10,12 +10,32 @@ import FirebaseAuth
 
 class TabBarController: UITabBarController {
     
+    var userProfile: User! {
+        didSet {
+            for navController in viewControllers ?? [UIViewController]() {
+                guard let vc = (navController as? UINavigationController)?.viewControllers.first else { return }
+                if let homeVC = vc as? HomeController {
+                    homeVC.userProfile = userProfile
+                }
+                
+                if let scanVC = vc as? ScannerViewController {
+                    scanVC.userProfile = userProfile
+                }
+                
+                if let searchVC = vc as? SearchViewController {
+                    searchVC.userProfile = userProfile
+                }
+            }
+        }
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
         Task {
             try await reloadViewController()
             signInStatusListener()
+            userProfileValueListener()
         }
     }
     
@@ -26,7 +46,9 @@ class TabBarController: UITabBarController {
             return
         }
         
-        try await BookHandler().refreshUserDefaults(currentUser)
+        userProfile = currentUser
+        
+        try await BookHandler().refreshUserDefaults(userProfile)
         
         let HomeController = HomeController(profile: currentUser)
         let ScannerViewController = ScannerViewController(profile: currentUser)
@@ -53,11 +75,23 @@ class TabBarController: UITabBarController {
     func signInStatusListener() {
         Auth.auth().addStateDidChangeListener { auth, user in
             Task {
-                guard try await self.validateSignInStatus() != nil else {
+                guard let currentUser = try await self.validateSignInStatus() else {
                     self.removeAllViewControllersAndShowSignIn()
                     return
                 }
+                
+                self.userProfile = currentUser
             }
+        }
+    }
+    
+    func userProfileValueListener() {
+        guard userProfile != nil else { return }
+        
+        DatabaseHandler.shared.addSnapshotListenerForUID(userProfile.uid) { user in
+            guard let user = user else { return }
+            
+            self.userProfile = user
         }
     }
     

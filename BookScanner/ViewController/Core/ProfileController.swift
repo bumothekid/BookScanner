@@ -10,7 +10,7 @@ import SDWebImage
 
 class ProfileController: UIViewController {
     
-    let userProfile: User!
+    var userProfile: User!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -21,7 +21,9 @@ class ProfileController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        updateData()
+        Task {
+            updateData()
+        }
     }
     
     required init(profile: User) {

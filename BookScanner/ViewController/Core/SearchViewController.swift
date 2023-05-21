@@ -9,7 +9,7 @@ import UIKit
 
 class SearchViewController: UIViewController {
     
-    let userProfile: User
+    var userProfile: User
 
     override func viewDidLoad() {
         super.viewDidLoad()

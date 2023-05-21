@@ -19,7 +19,7 @@ class HomeController: UIViewController {
     var booksArray: [Book] = [Book]()
     var bookOrder: [String] = [String]()
     var reloadWhenPopping: Bool = false
-    let userProfile: User
+    var userProfile: User!
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,12 +30,6 @@ class HomeController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        if !isBeingPresented && !isMovingToParent && reloadWhenPopping {
-            Task {
-                try await (navigationController?.tabBarController as? TabBarController)?.reloadViewController()
-            }
-        }
-        
         Task {
             booksDict = try await BookHandler().getAllBooks()
             bookOrder = try await BookHandler().getBookOrder()
@@ -45,7 +39,7 @@ class HomeController: UIViewController {
     
     required init(profile: User) {
         userProfile = profile
-        
+
         super.init(nibName: nil, bundle: nil)
     }
     

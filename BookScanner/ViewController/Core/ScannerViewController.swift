@@ -12,7 +12,7 @@ class ScannerViewController: UIViewController, AVCaptureMetadataOutputObjectsDel
     
     var captureSession: AVCaptureSession!
     var previewLayer: AVCaptureVideoPreviewLayer!
-    let userProfile: User!
+    var userProfile: User!
 
     override func viewDidLoad() {
         super.viewDidLoad()

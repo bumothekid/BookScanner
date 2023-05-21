@@ -51,6 +51,27 @@ class DatabaseHandler {
         Auth.auth().currentUser!.uid
     }
     
+    public func addSnapshotListenerForUID(_ uid: String, completionHandler: @escaping (_ user: User?) -> Void) {
+        database.collection("users").document(uid).addSnapshotListener { snapshot, error in
+            guard let userData = snapshot?.data() else {
+                completionHandler(nil)
+                return
+            }
+            
+            var bookReference = [String]()
+            for ref in userData["books"] as? [DocumentReference] ?? [DocumentReference]() {
+                bookReference.append(ref.path)
+            }
+            
+            var followingReference = [String]()
+            for ref in userData["following"] as? [DocumentReference] ?? [DocumentReference]()  {
+                followingReference.append(ref.path)
+            }
+            
+            return completionHandler(User(uid: uid, email: userData["email"] as! String, displayName: userData["displayname"] as! String, username: userData["username"] as! String, avatarURL: URL(string: userData["avatarURL"] as? String ?? ""), createdAt: userData["createdAt"] as! Double, followingPath: followingReference, booksPath: bookReference))
+        }
+    }
+    
     public func getUserByUsername(_ username: String) async throws -> User? {
         let uid = try await getUserIdByUsername(username)
         

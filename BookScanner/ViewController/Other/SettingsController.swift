@@ -10,7 +10,7 @@ import FirebaseAuth
 
 class SettingsController: UIViewController {
 
-    let userProfile: User
+    var userProfile: User!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -20,6 +20,7 @@ class SettingsController: UIViewController {
     
     required init(profile: User) {
         userProfile = profile
+        
         super.init(nibName: nil, bundle: nil)
     }
     
