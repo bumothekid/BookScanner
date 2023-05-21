@@ -15,26 +15,13 @@ class TabBarController: UITabBarController {
         
         Task {
             try await reloadViewController()
+            signInStatusListener()
         }
     }
     
     func reloadViewController() async throws {
-        guard Auth.auth().currentUser != nil, let currentUser = try await DatabaseHandler.shared.getUserByUserID(Auth.auth().currentUser!.uid) else {
-            if Auth.auth().currentUser != nil {
-                do {
-                    try Auth.auth().signOut()
-                }
-                catch {
-                    
-                }
-            }
-            
-            DispatchQueue.main.async {
-                let signInController = SignInController()
-                signInController.hidesBottomBarWhenPushed = true
-                signInController.navigationItem.hidesBackButton = true
-                self.navigationController?.pushViewController(signInController, animated: false)
-            }
+        guard let currentUser = try await validateSignInStatus() else {
+            removeAllViewControllersAndShowSignIn()
             
             return
         }
@@ -61,5 +48,38 @@ class TabBarController: UITabBarController {
         tabBar.backgroundColor = .secondarySystemBackground
         
         setViewControllers([navHomeController, navScannerViewController, navSearchController], animated: false)
+    }
+    
+    func signInStatusListener() {
+        Auth.auth().addStateDidChangeListener { auth, user in
+            Task {
+                guard try await self.validateSignInStatus() != nil else {
+                    self.removeAllViewControllersAndShowSignIn()
+                    return
+                }
+            }
+        }
+    }
+    
+    func validateSignInStatus() async throws -> User? {
+        guard let authCurrentUser = Auth.auth().currentUser else { return nil }
+        guard let currentUser = try await DatabaseHandler.shared.getUserByUserID(authCurrentUser.uid) else {
+            _ = try? Auth.auth().signOut()
+            
+            return nil
+        }
+        
+        return currentUser
+    }
+    
+    func removeAllViewControllersAndShowSignIn() {
+        DispatchQueue.main.async {
+            let signInController = SignInController()
+            signInController.hidesBottomBarWhenPushed = true
+            signInController.navigationItem.hidesBackButton = true
+            self.navigationController?.pushViewController(signInController, animated: false)
+        }
+        
+        setViewControllers(nil, animated: false)
     }
 }
