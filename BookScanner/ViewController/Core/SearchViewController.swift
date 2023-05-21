@@ -154,9 +154,9 @@ class ResultsViewController: UIViewController, UICollectionViewDataSource, UICol
             cell.followingStateLabel.attributedText = text
             cell.followingStateLabel.isHidden = false
             
-            cell.imageView.image = UIImage(named: "avatarPlaceholder")
         }
         
+        cell.imageView.image = UIImage(named: "avatarPlaceholder")
         if let avatarURL = user.avatarURL {
             cell.imageView.sd_setImage(with: avatarURL)
         }
@@ -169,7 +169,6 @@ class ResultsViewController: UIViewController, UICollectionViewDataSource, UICol
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(indexPath.row)
         let profileController = ProfileController(profile: userArray[indexPath.row])
         
         self.presentingViewController?.navigationController?.pushViewController(profileController, animated: true)
