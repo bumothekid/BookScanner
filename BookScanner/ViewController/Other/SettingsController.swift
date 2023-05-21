@@ -38,12 +38,10 @@ class SettingsController: UIViewController {
     }()
     
     @objc func logOut() {
-        do {
+        Task {
             try Auth.auth().signOut()
+            await changedSetting()
             back()
-        }
-        catch {
-            
         }
     }
     
@@ -51,7 +49,7 @@ class SettingsController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
-    func changedSetting() {
+    func changedSetting() async {
         let homeController = (parent as? UINavigationController)?.viewControllers[0] as? HomeController
         homeController?.reloadWhenPopping = true
     }

@@ -34,11 +34,20 @@ class ProfileController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    lazy var imagePickerController: UIImagePickerController = {
+        let picker = UIImagePickerController()
+        picker.allowsEditing = true
+        picker.delegate = self
+        return picker
+    }()
+    
     lazy var avatarImageView: UIImageView = {
         let iv = UIImageView()
         iv.image = UIImage(named: "avatarPlaceholder")
         iv.contentMode = .scaleAspectFit
+        iv.layer.cornerRadius = 10
         iv.clipsToBounds = true
+        iv.isUserInteractionEnabled = true
         return iv
     }()
     
@@ -66,6 +75,35 @@ class ProfileController: UIViewController {
         navigationController?.popViewController(animated: true)
     }
     
+    @objc func changeProfilePicture() {
+        Task {
+            guard userProfile.uid == (try await DatabaseHandler.shared.getCurrentUID()) else {
+                return
+            }
+            
+            let alertController = UIAlertController(title: "", message: "Do you want to change your profile picture?", preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+            
+            if userProfile.avatarURL != nil {
+                alertController.addAction(UIAlertAction(title: "Remove current", style: .destructive, handler: { _ in
+                    self.avatarImageView.image = UIImage(named: "avatarPlaceholder")
+                    Task {
+                        await DatabaseHandler.shared.resetProfilePicture(self.userProfile.uid)
+                        self.changedProfilePicture()
+                    }
+                }))
+            }
+            
+            alertController.addAction(UIAlertAction(title: "Yes", style: .default, handler: { _ in
+                self.changedProfilePicture()
+                
+                self.present(self.imagePickerController, animated: true)
+            }))
+            
+            present(alertController, animated: true)
+        }
+    }
+    
     func updateData() {
         if let avatarURL = userProfile.avatarURL {
             avatarImageView.sd_setImage(with: avatarURL)
@@ -89,5 +127,28 @@ class ProfileController: UIViewController {
         navigationItem.largeTitleDisplayMode = .never
         
         // TODO: Add views
+        
+        view.addSubview(avatarImageView)
+        avatarImageView.anchor(top: view.safeAreaLayoutGuide.topAnchor, left: view.safeAreaLayoutGuide.leftAnchor, paddingTop: 50, paddingLeft: 20, width: 75, height: 75)
+        
+        let tap = UITapGestureRecognizer(target: self, action: #selector(changeProfilePicture))
+        avatarImageView.addGestureRecognizer(tap)
+        
+        if let avatarURL = userProfile.avatarURL {
+            avatarImageView.sd_setImage(with: avatarURL)
+        }
+    }
+}
+
+extension ProfileController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+        Task {
+            guard let image = info[.editedImage] as? UIImage else { return }
+            
+            try await DatabaseHandler.shared.uploadProfilePicture(image, userProfile.uid)
+            avatarImageView.image = image
+            
+            dismiss(animated: true)
+        }
     }
 }

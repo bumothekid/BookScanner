@@ -10,10 +10,13 @@ import Firebase
 import FirebaseAuth
 import FirebaseFirestore
 import CryptoKit
+import UIKit
+import FirebaseStorage
 
 class DatabaseHandler {
     static let shared = DatabaseHandler()
     private var database = Firestore.firestore()
+    private var storage = Storage.storage()
     
     enum DatabaseError: Error {
         case userDoesNotExist
@@ -26,7 +29,7 @@ class DatabaseHandler {
         
         let authResult = try await Auth.auth().createUser(withEmail: email, password: hashedPassword)
         try await database.collection("usernames").document(username).setData(["uid": authResult.user.uid])
-        try await database.collection("users").document(authResult.user.uid).setData(["displayname": displayname, "username": username, "email": email, "createdAt": Date().timeIntervalSince1970, "books": [DocumentReference](), "following": [DocumentReference]()])
+        try await database.collection("users").document(authResult.user.uid).setData(["displayname": displayname, "username": username, "email": email, "createdAt": Date().timeIntervalSince1970, "avatarURL": "", "books": [DocumentReference](), "following": [DocumentReference]()])
     }
     
     public func loginUser(email: String, password: String) async throws {
@@ -43,6 +46,10 @@ class DatabaseHandler {
     }
     
     // MARK: -- User Related
+    
+    public func getCurrentUID() async throws -> String {
+        Auth.auth().currentUser!.uid
+    }
     
     public func getUserByUsername(_ username: String) async throws -> User? {
         let uid = try await getUserIdByUsername(username)
@@ -90,6 +97,31 @@ class DatabaseHandler {
         }
         
         return users
+    }
+
+    public func uploadProfilePicture(_ picture: UIImage, _ uid: String) async throws {
+        guard let imageData = picture.jpegData(compressionQuality: 0.2) else { return }
+        let storageReference = storage.reference().child("avatars").child(uid)
+        _ = try await storageReference.putDataAsync(imageData)
+        
+        
+        try await database.collection("users").document(uid).updateData(["avatarURL": storageReference.downloadURL().absoluteString])
+    }
+    
+    public func resetProfilePicture(_ uid: String) async {
+        let storageRefernce = storage.reference().child("avatars").child(uid)
+        
+        do {
+            try await storageRefernce.delete()
+        } catch {
+            print("couldn't delete profile picture from storage")
+        }
+        
+        do {
+            try await database.collection("users").document(uid).updateData(["avatarURL": ""])
+        } catch {
+            print("an error occured while removing the avatarURL from database user")
+        }
     }
     
     // MARK: -- Book Related
