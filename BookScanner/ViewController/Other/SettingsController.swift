@@ -38,11 +38,13 @@ class SettingsController: UIViewController {
     }()
     
     @objc func logOut() {
-        Task {
-            try Auth.auth().signOut()
-            await changedSetting()
-            back()
-        }
+        let alertController = UIAlertController(title: "", message: "Are you sure that you want to sign out of your account?", preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alertController.addAction(UIAlertAction(title: "Sign Out", style: .destructive, handler: { _ in
+            _ = try? Auth.auth().signOut()
+        }))
+        
+        present(alertController, animated: true)
     }
     
     @objc func back() {
